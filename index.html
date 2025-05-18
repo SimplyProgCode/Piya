@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Password Locked Gallery with Animations and Audio</title>
+<style>
+  /* Reset & base */
+  * {
+    box-sizing: border-box;
+  }
+  body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+  }
+
+  /* Container */
+  .container {
+    width: 100%;
+    max-width: 600px;
+    padding: 2rem;
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    text-align: center;
+    position: relative;
+    min-height: 400px;
+  }
+
+  /* Password screen */
+  #password-screen {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    animation: fadeIn 0.6s ease forwards;
+  }
+
+  #password-screen.fadeOut {
+    animation: fadeOut 0.6s ease forwards;
+  }
+
+  #password-screen h2 {
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+  }
+
+  #password-input {
+    padding: 0.8rem 1rem;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    transition: box-shadow 0.3s ease;
+  }
+  #password-input:focus {
+    box-shadow: 0 0 8px #764ba2;
+  }
+
+  #unlock-btn {
+    background-color: #764ba2;
+    border: none;
+    padding: 0.8rem 1.2rem;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.30s ease;
+  }
+
+  #unlock-btn:hover {
+    background-color: #5a3696;
+    transform: scale(1.05);
+  }
+  #unlock-btn:active {
+    transform: scale(0.98);
+  }
+
+  #error-message {
+    color: #ff3b3b;
+    font-weight: bold;
+    min-height: 1.25rem;
+  }
+
+  /* Gallery screen */
+  #gallery-screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    animation: fadeInScale 0.8s ease forwards;
+  }
+
+  #images-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  #gallery-screen img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    opacity: 0;
+    transform: scale(0.8);
+    animation-fill-mode: forwards;
+  }
+
+  /* Animate images with stagger */
+  #gallery-screen.show #images-wrapper img:nth-child(1) {
+    animation: popIn 0.4s ease forwards 0.1s;
+  }
+  #gallery-screen.show #images-wrapper img:nth-child(2) {
+    animation: popIn 0.4s ease forwards 0.3s;
+  }
+  #gallery-screen.show #images-wrapper img:nth-child(3) {
+    animation: popIn 0.4s ease forwards 0.5s;
+  }
+  #gallery-screen.show #images-wrapper img:nth-child(4) {
+    animation: popIn 0.4s ease forwards 0.7s;
+  }
+
+  /* Audio player styling */
+  audio {
+    width: 100%;
+    max-width: 400px;
+    outline: none;
+    border-radius: 10px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.3);
+  }
+
+  /* Background color when unlocked */
+  body.unlocked {
+    background: linear-gradient(135deg, #43cea2, #185a9d);
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    0% {opacity: 0; transform: translateY(20px);}
+    100% {opacity: 1; transform: translateY(0);}
+  }
+
+  @keyframes fadeOut {
+    0% {opacity: 1; transform: translateY(0);}
+    100% {opacity: 0; transform: translateY(-20px);}
+  }
+
+  @keyframes fadeInScale {
+    0% {opacity: 0; transform: scale(0.9);}
+    100% {opacity: 1; transform: scale(1);}
+  }
+
+  @keyframes popIn {
+    0% {opacity: 0; transform: scale(0.8);}
+    100% {opacity: 1; transform: scale(1);}
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div id="password-screen">
+      <h2>~Nama Asli Pia~</h2>
+      <input type="password" id="password-input" aria-label="Password input" placeholder="Nama lengkap Pia" />
+      <button id="unlock-btn">Konfirmasi</button>
+      <div id="error-message" role="alert" aria-live="assertive"></div>
+    </div>
+
+    <div id="gallery-screen" aria-label="Unlocked images gallery" role="region">
+      <div id="images-wrapper">
+        <img src="Pia1.jpg"/>
+        <img src="Pia2.jpg"/>
+        <img src="Pia3.jpg"/>
+        <img src="Pia4.jpg"/>
+      </div>
+      <audio controls preload="none" aria-label="Music player">
+        <source src="Pia.mp3" type="audio/mpeg" />
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+  </div>
+
+<script>
+  (function(){
+    const passwordKey = "Alfiyyah Putri Najwa"; // define your password key here
+
+    const passwordScreen = document.getElementById("password-screen");
+    const galleryScreen = document.getElementById("gallery-screen");
+    const unlockBtn = document.getElementById("unlock-btn");
+    const passwordInput = document.getElementById("password-input");
+    const errorMessage = document.getElementById("error-message");
+
+    function unlock() {
+      const entered = passwordInput.value.trim();
+      if(entered === passwordKey) {
+        // Clear error
+        errorMessage.textContent = "";
+
+        // Animate fadeout password screen, then hide and show gallery
+        passwordScreen.classList.add("fadeOut");
+
+        passwordScreen.addEventListener("animationend", function handleFadeOut() {
+          passwordScreen.style.display = "none";
+          galleryScreen.style.display = "flex";
+          galleryScreen.classList.add("show");
+
+          // Change background
+          document.body.classList.add("unlocked");
+
+          // Clean up listener
+          passwordScreen.removeEventListener("animationend", handleFadeOut);
+        });
+      } else {
+        errorMessage.textContent = "Kamu Typo Piyakuu.";
+        passwordInput.value = "";
+        passwordInput.focus();
+      }
+    }
+
+    unlockBtn.addEventListener("click", unlock);
+
+    passwordInput.addEventListener("keypress", (e) => {
+      if(e.key === "Enter"){
+        unlock();
+      }
+    });
+
+    // Autofocus on input on load
+    passwordInput.focus();
+  })();
+</script>
+</body>
+</html>
